@@ -1,0 +1,10 @@
+<svg width="300" height="450" viewBox="0 0 300 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="450" fill="#E5E7EB"/>
+  <rect x="50" y="100" width="200" height="250" fill="#9CA3AF" rx="4"/>
+  <circle cx="150" cy="200" r="30" fill="#6B7280"/>
+  <path d="M130 220 L170 220 L170 250 L130 250 Z" fill="#6B7280"/>
+  <rect x="70" y="280" width="160" height="8" fill="#6B7280" rx="2"/>
+  <rect x="90" y="300" width="120" height="8" fill="#6B7280" rx="2"/>
+  <rect x="110" y="320" width="80" height="8" fill="#6B7280" rx="2"/>
+  <text x="150" y="380" text-anchor="middle" fill="#6B7280" font-family="Arial, sans-serif" font-size="14">No Poster Available</text>
+</svg>

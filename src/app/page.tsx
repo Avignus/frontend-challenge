@@ -1,65 +1,133 @@
-import Image from "next/image";
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { SearchInput } from "@/components/search/SearchInput";
+import { SearchResults } from "@/components/search/SearchResults";
+import { InfiniteScrollResults } from "@/components/search/InfiniteScrollResults";
+import { Pagination } from "@/components/pagination/Pagination";
+import { PaginationToggle } from "@/components/pagination/PaginationToggle";
+import { useMovieSearch } from "@/hooks/useMovieSearch";
+import { useInfiniteMovieSearch } from "@/hooks/useInfiniteMovieSearch";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+
+type PaginationMode = "traditional" | "infinite";
+
+function SearchPage() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "Mock"; // Default to "Mock" to show movies
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const [paginationMode, setPaginationMode] = useState<PaginationMode>("traditional");
+
+  // Traditional pagination
+  const { data, isLoading, isError, error, isFetching } = useMovieSearch({
+    query,
+    page,
+  });
+
+  // Infinite scroll
+  const {
+    movies: infiniteMovies,
+    isLoading: isInfiniteLoading,
+    isError: isInfiniteError,
+    error: infiniteError,
+    hasNextPage,
+    loadMore,
+  } = useInfiniteMovieSearch({ query });
+
+  const totalResults = data?.totalResults ? parseInt(data.totalResults, 10) : 0;
+
+  return (
+    <ErrorBoundary>
+      <main className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Movie Search</h1>
+          
+          <div className="flex justify-center mb-8">
+            <SearchInput initialValue={query} />
+          </div>
+
+          {/* Pagination Mode Toggle */}
+          {query && data?.Search && data.Search.length > 0 && (
+            <PaginationToggle 
+              mode={paginationMode} 
+              onModeChange={setPaginationMode} 
+            />
+          )}
+
+          {/* Loading State */}
+          {isLoading && !isFetching && (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+            </div>
+          )}
+
+          {/* Error State */}
+          {(isError || isInfiniteError) && (
+            <div className="text-center py-12">
+              <p className="text-red-600 mb-4">
+                {(error || infiniteError) instanceof Error 
+                  ? (error || infiniteError)!.message 
+                  : "Something went wrong"
+                }
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !isError && query && (!data?.Search || data.Search.length === 0) && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No movies found for "{query}"</p>
+              <p className="text-gray-400 text-sm mt-2">Try searching for something else</p>
+            </div>
+          )}
+
+          {/* Results */}
+          {data?.Search && data.Search.length > 0 && (
+            <>
+              <div className="relative">
+                {isFetching && !isLoading && (
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-blue-600 animate-pulse" />
+                )}
+                
+                {paginationMode === "traditional" ? (
+                  <SearchResults movies={data.Search} />
+                ) : (
+                  <InfiniteScrollResults
+                    movies={infiniteMovies}
+                    isLoading={isInfiniteLoading}
+                    hasNextPage={hasNextPage}
+                    onLoadMore={loadMore}
+                  />
+                )}
+              </div>
+              
+              {/* Traditional Pagination */}
+              {paginationMode === "traditional" && (
+                <Pagination
+                  currentPage={page}
+                  totalResults={totalResults}
+                  query={query}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </main>
+    </ErrorBoundary>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPage />
+    </Suspense>
   );
 }
