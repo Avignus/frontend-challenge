@@ -102,7 +102,7 @@ The application implements a clear separation of state concerns:
 
 **Observable Behaviors**:
 - **Back Navigation**: Results appear instantly from cache without loading state
-- **Pagination**: Using `keepPreviousData` prevents content flash
+- **Pagination**: Using `placeholderData` prevents content flash during page transitions
 - **Shared Queries**: Multiple components share one request for same movie details
 - **Background Updates**: Data refetched in background after `staleTime`
 
