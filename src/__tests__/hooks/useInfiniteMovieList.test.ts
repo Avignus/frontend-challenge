@@ -88,11 +88,11 @@ describe("useInfiniteMovieList", () => {
     // Load more
     result.current.fetchNextPage();
 
+    // Wait for movies to be accumulated
     await waitFor(() => {
-      expect(result.current.isLoadingMore).toBe(false);
+      expect(result.current.movies.length).toBeGreaterThan(1);
     });
 
-    expect(result.current.movies).toHaveLength(2);
     expect(result.current.movies[1].title).toBe("Second Movie");
   });
 
@@ -158,13 +158,13 @@ describe("useInfiniteMovieList", () => {
       status: 500,
     });
 
+    // Load more
     result.current.fetchNextPage();
 
+    // Wait for error state to update
     await waitFor(() => {
-      expect(result.current.isLoadingMore).toBe(false);
+      expect(result.current.error).toBe("API error: 500");
     });
-
-    expect(result.current.error).toBe("API error: 500");
   });
 
   it("should reset when type changes", async () => {

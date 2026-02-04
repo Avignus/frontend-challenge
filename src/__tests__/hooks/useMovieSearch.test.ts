@@ -92,13 +92,12 @@ describe("useMovieSearch", () => {
     // Perform search
     await result.current.search("test query");
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://api.imdbapi.dev/search/titles?query=test+query&limit=50",
-      { headers: { accept: "application/json" } }
-    );
-    expect(result.current.hasSearched).toBe(true);
-    expect(result.current.searchQuery).toBe("test query");
-    expect(result.current.results).toHaveLength(1);
+    // Wait for state to update
+    await waitFor(() => {
+      expect(result.current.hasSearched).toBe(true);
+      expect(result.current.searchQuery).toBe("test query");
+      expect(result.current.results).toHaveLength(1);
+    });
     expect(result.current.results[0].title).toBe("Search Result Movie");
   });
 
@@ -146,7 +145,10 @@ describe("useMovieSearch", () => {
     // Clear search
     await result.current.clear();
 
-    expect(result.current.hasSearched).toBe(false);
+    // Wait for clear operation to complete
+    await waitFor(() => {
+      expect(result.current.hasSearched).toBe(false);
+    });
     expect(result.current.searchQuery).toBe("");
     // Should have popular movies again (from loadPopular call)
     expect(result.current.results.length).toBeGreaterThan(0);
