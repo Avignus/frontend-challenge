@@ -16,7 +16,7 @@ export interface SearchResponse {
   totalPages: number;
 }
 
-function mapToMovie(result: MovieSearchResult): Movie {
+export function mapToMovie(result: MovieSearchResult): Movie {
   return {
     id: result.id,
     title: result.primaryTitle || result.originalTitle || "Untitled",
