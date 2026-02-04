@@ -25,6 +25,8 @@ function SearchPage() {
     page,
   });
 
+  console.log("📄 Page data:", { data, isLoading, isError, error, query });
+
   // Infinite scroll
   const {
     movies: infiniteMovies,

@@ -6,6 +6,8 @@ export async function searchMovies(
   page: number = 1,
   signal?: AbortSignal
 ): Promise<MovieSearchResponse> {
+  console.log("🔍 searchMovies called with:", { query, page });
+  
   try {
     // Get popular movies from IMDb API
     const { data } = await apiClient.get<MovieSearchResponse>("titles", {
@@ -17,6 +19,8 @@ export async function searchMovies(
       },
       signal,
     });
+    
+    console.log("📊 API response:", data);
     
     // If no query, return popular movies
     if (!query.trim()) {
@@ -32,12 +36,14 @@ export async function searchMovies(
       title.originalTitle?.toLowerCase().includes(query.toLowerCase())
     );
     
+    console.log("🎯 Filtered results:", filteredTitles.length);
+    
     return {
       titles: filteredTitles,
       totalCount: filteredTitles.length
     };
   } catch (error) {
-    console.error("IMDb API search failed:", error);
+    console.error("❌ IMDb API search failed:", error);
     throw error; // Let the fallback handle this
   }
 }

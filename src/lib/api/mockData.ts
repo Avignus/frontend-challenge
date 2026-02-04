@@ -4,41 +4,40 @@ import type { MovieSearchResponse, MovieDetails } from "@/types/movie";
 const mockMovies = Array.from({ length: 100 }, (_, i) => {
   const posterIndex = (i % 3) + 1;
   return {
-    imdbID: `tt${String(i + 1).padStart(7, "0")}`,
-    Title: `Mock Movie ${i + 1}`,
-    Year: `${2020 + (i % 4)}`,
-    Type: "movie",
-    Poster: i % 3 === 0 ? "N/A" : `/mock-movie-${posterIndex}.svg`,
+    id: `tt${String(i + 1).padStart(7, "0")}`,
+    primaryTitle: `Mock Movie ${i + 1}`,
+    originalTitle: `Mock Movie ${i + 1}`,
+    type: "movie",
+    startYear: 2020 + (i % 4),
+    primaryImage: {
+      url: i % 3 === 0 ? "/placeholder-movie.svg" : `/mock-movie-${posterIndex}.svg`,
+      width: 300,
+      height: 450,
+    },
+    genres: [["Action", "Comedy", "Drama"][i % 3]],
   };
 });
 
 const mockMovieDetails: Record<string, MovieDetails> = {
   "tt0000001": {
-    imdbID: "tt0000001",
-    Title: "Mock Movie 1",
-    Year: "2023",
-    Rated: "PG-13",
-    Released: "15 Jan 2023",
-    Runtime: "120 min",
-    Genre: "Action, Adventure, Sci-Fi",
-    Director: "John Director",
-    Writer: "Jane Writer",
-    Actors: "Actor One, Actress Two, Supporting Actor",
-    Plot: "In a world where movies are mocked, one film stands above the rest. This is the story of that film, its struggles, and its ultimate triumph over adversity.",
-    Language: "English",
-    Country: "United States",
-    Awards: "Won 1 Oscar. Another 5 wins & 10 nominations.",
-    Poster: "/mock-movie-1.svg",
-    Ratings: [
-      { Source: "Internet Movie Database", Value: "7.8/10" },
-      { Source: "Rotten Tomatoes", Value: "85%" },
-      { Source: "Metacritic", Value: "72/100" },
-    ],
-    Metascore: "72",
-    imdbRating: "7.8",
-    imdbVotes: "125,432",
-    Type: "movie",
-    Response: "True",
+    id: "tt0000001",
+    primaryTitle: "Mock Movie 1",
+    originalTitle: "Mock Movie 1",
+    type: "movie",
+    startYear: 2023,
+    primaryImage: {
+      url: "/mock-movie-1.svg",
+      width: 300,
+      height: 450,
+    },
+    genres: ["Action", "Adventure", "Sci-Fi"],
+    runtimeStr: "120 min",
+    plot: "In a world where movies are mocked, one film stands above the rest. This is the story of that film, its struggles, and its ultimate triumph over adversity.",
+    directors: ["John Director"],
+    writers: ["Jane Writer"],
+    stars: ["Actor One", "Actress Two", "Supporting Actor"],
+    imdbRating: 7.8,
+    imdbRatingCount: 125432,
   },
 };
 
@@ -49,8 +48,8 @@ export function mockSearchMovies(query: string, page: number = 1): MovieSearchRe
   // Filter movies based on query
   const filteredMovies = query
     ? mockMovies.filter(movie => 
-        movie.Title.toLowerCase().includes(query.toLowerCase()) ||
-        movie.Year.includes(query)
+        movie.primaryTitle.toLowerCase().includes(query.toLowerCase()) ||
+        movie.startYear.toString().includes(query)
       )
     : mockMovies;
   
@@ -58,9 +57,8 @@ export function mockSearchMovies(query: string, page: number = 1): MovieSearchRe
   const paginatedResults = filteredMovies.slice(startIndex, endIndex);
   
   return {
-    Search: paginatedResults,
-    totalResults: filteredMovies.length.toString(),
-    Response: "True",
+    titles: paginatedResults,
+    totalCount: filteredMovies.length,
   };
 }
 
@@ -74,30 +72,19 @@ export function mockGetMovieDetails(imdbId: string): MovieDetails {
   const baseMovie = mockMovies[movieIndex] || mockMovies[0];
   
   return {
-    imdbID: baseMovie.imdbID,
-    Title: baseMovie.Title,
-    Year: baseMovie.Year,
-    Rated: "PG-13",
-    Released: "15 Jan 2023",
-    Runtime: "120 min",
-    Genre: "Action, Adventure, Sci-Fi",
-    Director: "John Director",
-    Writer: "Jane Writer",
-    Actors: "Actor One, Actress Two, Supporting Actor",
-    Plot: `This is the detailed plot for ${baseMovie.Title}. In a world where movies are mocked, this film tells an extraordinary story that captivates audiences worldwide.`,
-    Language: "English",
-    Country: "United States",
-    Awards: "Won 1 Oscar. Another 5 wins & 10 nominations.",
-    Poster: baseMovie.Poster,
-    Ratings: [
-      { Source: "Internet Movie Database", Value: "7.8/10" },
-      { Source: "Rotten Tomatoes", Value: "85%" },
-      { Source: "Metacritic", Value: "72/100" },
-    ],
-    Metascore: "72",
-    imdbRating: "7.8",
-    imdbVotes: "125,432",
-    Type: "movie",
-    Response: "True",
+    id: baseMovie.id,
+    primaryTitle: baseMovie.primaryTitle,
+    originalTitle: baseMovie.originalTitle,
+    type: baseMovie.type,
+    startYear: baseMovie.startYear,
+    primaryImage: baseMovie.primaryImage,
+    genres: baseMovie.genres,
+    runtimeStr: "120 min",
+    plot: `This is the detailed plot for ${baseMovie.primaryTitle}. In a world where movies are mocked, this film tells an extraordinary story that captivates audiences worldwide.`,
+    directors: ["John Director"],
+    writers: ["Jane Writer"],
+    stars: ["Actor One", "Actress Two", "Supporting Actor"],
+    imdbRating: 7.8,
+    imdbRatingCount: 125432,
   };
 }
