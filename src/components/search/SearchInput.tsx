@@ -31,14 +31,14 @@ export function SearchInput({ initialValue = "" }: SearchInputProps) {
       setShowRecent(false);
       router.push(`/?q=${encodeURIComponent(inputValue.trim())}&page=1`);
     } else if (inputValue.trim().length === 0) {
-      // If empty, show default movies
-      router.push("/?q=Mock&page=1");
+      // If empty, show popular movies
+      router.push("/");
     }
   }, [inputValue, router, addSearch]);
 
   const handleClear = useCallback(() => {
     setInputValue("");
-    router.push("/?q=Mock&page=1");
+    router.push("/");
   }, [router]);
 
   const handleRecentClick = useCallback((query: string) => {
