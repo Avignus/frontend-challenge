@@ -1,15 +1,17 @@
 # Movie Search Application
 
-A production-grade movie search application built with Next.js, TypeScript, and TanStack Query, utilizing the OMDb API for movie data.
+A modern, responsive movie search application built with Next.js 16, TypeScript, and Tailwind CSS. Features real-time search, pagination, and detailed movie information using the free [IMDb API](https://imdbapi.dev/) for movie details and mock data for search functionality.
+
+> **Note**: The free IMDb API doesn't provide text search capabilities, so this app uses mock data for search results and real API data for movie details. For production use, consider integrating with a search-enabled API like TMDB or implementing a search index.
 
 ## 🚀 Features
 
 - **Real-time Search**: Debounced search with instant results
-- **Advanced Caching**: Intelligent caching with TanStack Query
-- **Responsive Design**: Mobile-first design with Tailwind CSS
-- **URL State Management**: Shareable URLs with search parameters
-- **Error Handling**: Comprehensive error boundaries and graceful fallbacks
-- **Accessibility**: ARIA labels and semantic HTML
+- **Dual Pagination**: Traditional page-based and infinite scroll options
+- **Rich Movie Details**: Comprehensive information including ratings, cast, and plot
+- **Responsive Design**: Optimized for desktop, tablet, and mobile
+- **Error Handling**: Graceful fallbacks and user-friendly error messages
+- **Performance Optimized**: Caching, lazy loading, and efficient re-rendering
 - **Type Safety**: Full TypeScript implementation
 
 ## 🛠️ Technology Stack
@@ -20,7 +22,7 @@ A production-grade movie search application built with Next.js, TypeScript, and 
 - **Data Fetching**: TanStack Query v5
 - **HTTP Client**: Axios
 - **Testing**: Vitest + React Testing Library
-- **API**: OMDb API
+- **API**: IMDb API (https://imdbapi.dev/)
 
 ## 📁 Project Structure
 
@@ -108,7 +110,7 @@ The application implements a clear separation of state concerns:
 
 ### Error Handling
 
-- **API Level**: Axios interceptors handle OMDb API error responses
+- **API Level**: Axios interceptors handle IMDb API error responses
 - **Component Level**: Error boundaries catch React rendering errors
 - **User Level**: Graceful error messages with retry functionality
 - **Network Level**: Request cancellation on component unmount
@@ -118,7 +120,7 @@ The application implements a clear separation of state concerns:
 ### Prerequisites
 
 - Node.js 18+ 
-- OMDb API key (free at https://www.omdbapi.com/)
+- No API key required (uses free IMDb API at https://imdbapi.dev/)
 
 ### Installation
 
@@ -128,18 +130,19 @@ The application implements a clear separation of state concerns:
    npm install
    ```
 
-3. Set up environment variables:
-   Create `.env.local` and add your OMDb API key:
-   ```
-   NEXT_PUBLIC_OMDB_API_KEY=your_api_key_here
-   ```
-
-4. Run the development server:
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000)
+4. Open [http://localhost:3000](http://localhost:3000)
+
+### Environment Variables (Optional)
+
+Create `.env.local` to configure behavior:
+```
+NEXT_PUBLIC_USE_MOCK_API=false  # Set to true to use mock data
+```
 
 ### Testing
 
@@ -178,7 +181,7 @@ npm run test
 
 | Variable | Description | Required |
 |----------|-------------|-----------|
-| `NEXT_PUBLIC_OMDB_API_KEY` | OMDb API key | Yes |
+| `NEXT_PUBLIC_USE_MOCK_API` | Use mock data instead of live API | No (default: false) |
 
 ### TanStack Query Configuration
 

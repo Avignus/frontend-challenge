@@ -9,19 +9,19 @@ interface MovieCardProps {
 const FALLBACK_POSTER = "/placeholder-movie.svg"; // Add a placeholder image
 
 export function MovieCard({ movie }: MovieCardProps) {
-  const posterSrc = movie.Poster !== "N/A" ? movie.Poster : FALLBACK_POSTER;
+  const posterSrc = movie.primaryImage?.url || FALLBACK_POSTER;
 
   return (
     <Link
-      href={`/movie/${movie.imdbID}`}
+      href={`/movie/${movie.id}`}
       className="group block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       role="article"
-      aria-label={`View details for ${movie.Title} (${movie.Year})`}
+      aria-label={`View details for ${movie.primaryTitle} (${movie.year})`}
     >
       <div className="relative aspect-[2/3] bg-gray-100">
         <Image
           src={posterSrc}
-          alt={`${movie.Title} movie poster`}
+          alt={`${movie.primaryTitle} movie poster`}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-110"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -34,9 +34,9 @@ export function MovieCard({ movie }: MovieCardProps) {
       </div>
       <div className="p-4">
         <h3 className="font-semibold text-gray-800 text-sm mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
-          {movie.Title}
+          {movie.primaryTitle}
         </h3>
-        <p className="text-gray-600 text-xs">{movie.Year}</p>
+        <p className="text-gray-600 text-xs">{movie.year}</p>
       </div>
     </Link>
   );
