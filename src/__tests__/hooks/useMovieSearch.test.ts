@@ -74,11 +74,6 @@ describe("useMovieSearch", () => {
   });
 
   it("should search movies successfully", async () => {
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve(mockSearchResponse),
-    });
-
     const { result } = renderHook(() => useMovieSearch());
 
     // Wait for initial load
@@ -89,6 +84,12 @@ describe("useMovieSearch", () => {
     // Clear fetch calls from initial load
     vi.clearAllMocks();
 
+    // Mock search response
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockSearchResponse),
+    });
+
     // Perform search
     await result.current.search("test query");
 
@@ -97,8 +98,8 @@ describe("useMovieSearch", () => {
       expect(result.current.hasSearched).toBe(true);
       expect(result.current.searchQuery).toBe("test query");
       expect(result.current.results).toHaveLength(1);
+      expect(result.current.results[0].title).toBe("Search Result Movie");
     });
-    expect(result.current.results[0].title).toBe("Search Result Movie");
   });
 
   it("should handle search errors", async () => {
