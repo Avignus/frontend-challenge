@@ -1,10 +1,16 @@
+// According to imdb.yaml: imdbapiRating has aggregateRating and voteCount
+export interface Rating {
+  aggregateRating?: number;
+  voteCount?: number;
+}
+
 export interface MovieSearchResult {
   id: string;
   primaryTitle: string;
   originalTitle?: string;
   fullTitle?: string;
   type: string;
-  startYear?: number; // Changed from year to startYear
+  startYear?: number;
   primaryImage?: {
     url: string;
     width?: number;
@@ -12,14 +18,10 @@ export interface MovieSearchResult {
     caption?: string;
   };
   releaseDate?: string;
-  runtimeSeconds?: number; // Changed from runtimeMinutes to runtimeSeconds
+  runtimeSeconds?: number;
   plot?: string;
-  genres?: string[]; // Changed from object array to string array
-  directors?: string[]; // Simplified to string array
-  writers?: string[]; // Simplified to string array
-  stars?: string[]; // Simplified to string array
-  imdbRating?: number;
-  imdbRatingCount?: number;
+  genres?: string[];
+  rating?: Rating; // According to imdb.yaml: rating is an object
 }
 
 export interface MovieSearchResponse {
@@ -28,18 +30,48 @@ export interface MovieSearchResponse {
   totalCount?: number;
 }
 
+export interface Person {
+  id: string;
+  displayName: string;
+  alternativeNames?: string[];
+  primaryProfessions?: string[];
+}
+
+export interface Country {
+  code: string;
+  name: string;
+}
+
+export interface Language {
+  code: string;
+  name: string;
+}
+
+export interface Interest {
+  id: string;
+  name: string;
+}
+
+export interface Metacritic {
+  url?: string;
+  score?: number;
+  reviewCount?: number;
+}
+
 export interface MovieDetails {
   id: string;
   primaryTitle: string;
   originalTitle?: string;
   fullTitle?: string;
   type: string;
-  startYear?: number; // Changed from year to startYear
+  startYear?: number;
+  endYear?: number;
   primaryImage?: {
     url: string;
     width?: number;
     height?: number;
     caption?: string;
+    type?: string;
   };
   releaseDate?: string;
   releaseDateDetailed?: {
@@ -47,24 +79,16 @@ export interface MovieDetails {
     month: number;
     year: number;
   };
-  runtimeSeconds?: number; // Changed from runtimeMinutes to runtimeSeconds
-  runtimeStr?: string;
+  runtimeSeconds?: number;
   plot?: string;
-  plotLocal?: string;
-  genres?: string[]; // Changed to string array
-  directors?: string[]; // Changed to string array
-  writers?: string[]; // Changed to string array
-  stars?: string[]; // Changed to string array
-  ratings?: {
-    id: string;
-    title: string;
-    rating: number;
-    ratingCount: number;
-  }[];
-  imdbRating?: number;
-  imdbRatingCount?: number;
-  metacriticRating?: number;
-  metacriticRatingCount?: number;
+  genres?: string[];
+  directors?: Person[];
+  writers?: Person[];
+  stars?: Person[];
+  // According to imdb.yaml: rating is an imdbapiRating object with aggregateRating and voteCount
+  rating?: Rating;
+  // According to imdb.yaml: metacritic is an imdbapiMetacritic object
+  metacritic?: Metacritic;
   contentRating?: string;
   imdbId?: string;
   tagline?: string;
@@ -72,12 +96,8 @@ export interface MovieDetails {
     id: string;
     name: string;
   }[];
-  countries?: {
-    id: string;
-    name: string;
-  }[];
-  languages?: {
-    id: string;
-    name: string;
-  }[];
+  originCountries?: Country[];
+  spokenLanguages?: Language[];
+  interests?: Interest[];
+  isAdult?: boolean;
 }

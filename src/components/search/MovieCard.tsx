@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { MovieSearchResult } from "@/types/movie";
 
@@ -19,12 +18,10 @@ export function MovieCard({ movie }: MovieCardProps) {
       aria-label={`View details for ${movie.primaryTitle} (${movie.startYear})`}
     >
       <div className="relative aspect-[2/3] bg-gray-100">
-        <Image
+        <img
           src={posterSrc}
           alt={`${movie.primaryTitle} movie poster`}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-110 w-full h-full"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = FALLBACK_POSTER;

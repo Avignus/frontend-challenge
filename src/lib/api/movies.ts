@@ -6,41 +6,55 @@ export async function searchMovies(
   page: number = 1,
   signal?: AbortSignal
 ): Promise<MovieSearchResponse> {
-  console.log("🔍 searchMovies called with:", { query, page });
-  
   try {
-    // Get popular movies from IMDb API
-    const { data } = await apiClient.get<MovieSearchResponse>("titles", {
+    // If no query, return popular movies
+    if (!query.trim()) {
+      // According to imdb.yaml: /titles endpoint doesn't have pageSize parameter
+      const { data } = await apiClient.get<MovieSearchResponse>("titles", {
+        params: { 
+          types: "MOVIE",
+          sortBy: "SORT_BY_POPULARITY",
+          sortOrder: "DESC",
+        },
+        signal,
+      });
+      
+      // Limit client-side since API doesn't support pageSize
+      const limitedTitles = data.titles.slice(0, 50);
+      const startIndex = (page - 1) * 10;
+      const endIndex = startIndex + 10;
+      return {
+        titles: limitedTitles.slice(startIndex, endIndex),
+        totalCount: limitedTitles.length
+      };
+    }
+    
+    // According to imdb.yaml: Use /search/titles endpoint for search
+    const { data: searchData } = await apiClient.get<MovieSearchResponse>("search/titles", {
       params: { 
-        types: "MOVIE", // String instead of array to avoid URL encoding issues
-        pageSize: 100, // Get more results to search through
-        sortBy: "SORT_BY_POPULARITY",
-        sortOrder: "DESC",
+        query: query.trim(),
       },
       signal,
     });
     
-    console.log("📊 API response:", data);
+    const searchTitles = searchData.titles || [];
     
-    // If no query, return popular movies
-    if (!query.trim()) {
+    // If no matches found, return empty instead of popular movies
+    if (searchTitles.length === 0) {
       return {
-        titles: data.titles.slice(0, 10), // Return first 10 for display
-        totalCount: data.titles.length
+        titles: [],
+        totalCount: 0
       };
     }
     
-    // Filter results based on search query
-    const filteredTitles = data.titles.filter(title => 
-      title.primaryTitle?.toLowerCase().includes(query.toLowerCase()) ||
-      title.originalTitle?.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    console.log("🎯 Filtered results:", filteredTitles.length);
+    // Paginate search results
+    const startIndex = (page - 1) * 10;
+    const endIndex = startIndex + 10;
+    const paginatedTitles = searchTitles.slice(startIndex, endIndex);
     
     return {
-      titles: filteredTitles,
-      totalCount: filteredTitles.length
+      titles: paginatedTitles,
+      totalCount: searchTitles.length
     };
   } catch (error) {
     console.error("❌ IMDb API search failed:", error);

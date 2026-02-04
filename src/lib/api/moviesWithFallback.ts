@@ -9,10 +9,15 @@ export async function searchMoviesWithFallback(
   query: string,
   page: number = 1
 ): Promise<MovieSearchResponse> {
+  console.log("🔧 searchMoviesWithFallback called:", { query, page });
+  
   // Always try real API first unless explicitly forced to use mock
   if (!FORCE_MOCK_API) {
     try {
-      return await searchMovies(query, page);
+      console.log("🌐 Trying real API...");
+      const result = await searchMovies(query, page);
+      console.log("✅ Real API success:", result);
+      return result;
     } catch (error) {
       console.warn("IMDb API failed, falling back to mock data:", error);
       // Fallback to mock data if API fails
@@ -20,8 +25,11 @@ export async function searchMoviesWithFallback(
   }
   
   // Use mock data (either forced or as fallback)
+  console.log("🎭 Using mock data...");
   await new Promise(resolve => setTimeout(resolve, 300)); // Simulate network delay
-  return mockSearchMovies(query, page);
+  const result = mockSearchMovies(query, page);
+  console.log("📋 Mock data result:", result);
+  return result;
 }
 
 export async function getMovieDetailsWithFallback(imdbId: string): Promise<MovieDetails> {

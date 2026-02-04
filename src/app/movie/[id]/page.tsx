@@ -2,8 +2,11 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 import { useMovieDetails } from "@/hooks/useMovieDetails";
-import { MovieDetails as MovieDetailsComponent } from "@/components/movie/MovieDetails";
+import { MovieDetails } from "@/components/movie/MovieDetails";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 export default function MovieDetailsPage() {
   const params = useParams();
@@ -11,41 +14,47 @@ export default function MovieDetailsPage() {
   
   const { data: movie, isLoading, isError, error } = useMovieDetails(imdbId);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-red-600">
-          {error instanceof Error ? error.message : "Failed to load movie"}
-        </p>
-        <Link href="/" className="text-blue-600 hover:underline">
-          ← Back to search
-        </Link>
-      </div>
-    );
-  }
-
-  if (!movie) return null;
-
   return (
-    <main className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <Link
-          href="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6 font-medium transition-colors duration-200"
-        >
-          ← Back to search
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+      <Header />
 
-        <MovieDetailsComponent movie={movie} />
-      </div>
-    </main>
+      <main className="flex-1 relative">
+        {/* Loading State */}
+        {isLoading && (
+          <div className="min-h-[60vh] flex flex-col items-center justify-center">
+            <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4" />
+            <p className="text-gray-400 animate-pulse">Loading movie details...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {isError && (
+          <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4 text-center">
+             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-2">
+                <AlertCircle className="w-8 h-8 text-red-400" />
+             </div>
+            <h2 className="text-xl font-bold text-white">Oops! Something went wrong</h2>
+            <p className="text-red-400 max-w-md">
+              {error instanceof Error ? error.message : "Failed to load movie details"}
+            </p>
+            <Link 
+              href="/" 
+              className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10"
+            >
+              Back to Home
+            </Link>
+          </div>
+        )}
+
+        {/* Success State */}
+        {!isLoading && !isError && movie && (
+          <div className="py-8 md:py-12">
+            <MovieDetails movie={movie} />
+          </div>
+        )}
+      </main>
+
+      <Footer />
+    </div>
   );
 }
