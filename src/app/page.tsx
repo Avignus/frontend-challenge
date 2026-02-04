@@ -15,7 +15,7 @@ type PaginationMode = "traditional" | "infinite";
 
 function SearchPage() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "Mock"; // Default to "Mock" to show movies
+  const query = searchParams.get("q") || ""; // Empty default to show popular movies
   const page = parseInt(searchParams.get("page") || "1", 10);
   const [paginationMode, setPaginationMode] = useState<PaginationMode>("traditional");
 
@@ -35,7 +35,7 @@ function SearchPage() {
     loadMore,
   } = useInfiniteMovieSearch({ query });
 
-  const totalResults = data?.totalResults ? parseInt(data.totalResults, 10) : 0;
+  const totalResults = data?.totalCount || 0;
 
   return (
     <ErrorBoundary>
@@ -48,7 +48,7 @@ function SearchPage() {
           </div>
 
           {/* Pagination Mode Toggle */}
-          {query && data?.Search && data.Search.length > 0 && (
+          {query && data?.titles && data.titles.length > 0 && (
             <PaginationToggle 
               mode={paginationMode} 
               onModeChange={setPaginationMode} 
@@ -81,7 +81,7 @@ function SearchPage() {
           )}
 
           {/* Empty State */}
-          {!isLoading && !isError && query && (!data?.Search || data.Search.length === 0) && (
+          {!isLoading && !isError && query && (!data?.titles || data.titles.length === 0) && (
             <div className="text-center py-12">
               <p className="text-gray-500">No movies found for "{query}"</p>
               <p className="text-gray-400 text-sm mt-2">Try searching for something else</p>
@@ -89,7 +89,7 @@ function SearchPage() {
           )}
 
           {/* Results */}
-          {data?.Search && data.Search.length > 0 && (
+          {data?.titles && data.titles.length > 0 && (
             <>
               <div className="relative">
                 {isFetching && !isLoading && (
@@ -97,7 +97,7 @@ function SearchPage() {
                 )}
                 
                 {paginationMode === "traditional" ? (
-                  <SearchResults movies={data.Search} />
+                  <SearchResults movies={data.titles} />
                 ) : (
                   <InfiniteScrollResults
                     movies={infiniteMovies}
@@ -117,6 +117,14 @@ function SearchPage() {
                 />
               )}
             </>
+          )}
+
+          {/* Show popular movies when no search query */}
+          {!query && data?.titles && data.titles.length > 0 && (
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-700">Popular Movies</h2>
+              <p className="text-gray-500 text-sm">Browse trending movies or search for something specific</p>
+            </div>
           )}
         </div>
       </main>
