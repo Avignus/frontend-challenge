@@ -134,7 +134,11 @@ describe("useMovieSearch", () => {
     });
 
     await result.current.search("test query");
-    expect(result.current.hasSearched).toBe(true);
+
+    // Wait for state to update
+    await waitFor(() => {
+      expect(result.current.hasSearched).toBe(true);
+    });
 
     // Clear fetch calls
     vi.clearAllMocks();
@@ -180,8 +184,12 @@ describe("useMovieSearch", () => {
 
     await result.current.search("no results query");
 
+    // Wait for state to update
+    await waitFor(() => {
+      expect(result.current.hasSearched).toBe(true);
+    });
+
     expect(result.current.results).toEqual([]);
-    expect(result.current.hasSearched).toBe(true);
   });
 
   it("should trim search query", async () => {
@@ -224,7 +232,10 @@ describe("useMovieSearch", () => {
 
     await result.current.loadPopular();
 
-    expect(result.current.hasSearched).toBe(false);
+    // Wait for state to update
+    await waitFor(() => {
+      expect(result.current.hasSearched).toBe(false);
+    });
     expect(result.current.results.length).toBeGreaterThan(0);
     expect(result.current.results[0].title).toBe("Popular Movie");
   });

@@ -91,7 +91,9 @@ describe("MovieCard", () => {
 
     render(<MovieCard movie={movieWithoutTitles} />);
 
-    expect(screen.getByText("Untitled")).toBeInTheDocument();
+    // Should show "Untitled" in the title
+    const titleElement = screen.getByText("Untitled");
+    expect(titleElement).toBeInTheDocument();
   });
 
   it("should not display year when startYear is missing", () => {

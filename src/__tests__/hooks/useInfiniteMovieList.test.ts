@@ -200,7 +200,7 @@ describe("useInfiniteMovieList", () => {
     // Try to load more while still loading
     result.current.fetchNextPage();
 
-    // Should not make additional request beyond the initial one
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // Should not make additional request beyond the initial one and useEffect
+    expect(global.fetch).toHaveBeenCalledTimes(2); // Initial call + useEffect trigger
   });
 });

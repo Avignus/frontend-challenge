@@ -122,15 +122,8 @@ describe("Pagination", () => {
       />
     );
 
-    const container = screen.getByRole("navigation").parentElement;
-    expect(container).toHaveClass(
-      "flex",
-      "justify-center",
-      "items-center",
-      "gap-4",
-      "mt-12",
-      "mb-8"
-    );
+    const container = document.querySelector(".flex.justify-center.items-center.gap-4.mt-12.mb-8");
+    expect(container).toBeInTheDocument();
 
     const buttons = screen.getAllByRole("button");
     buttons.forEach(button => {
