@@ -10,7 +10,7 @@ export async function searchMovies(
     // Get popular movies from IMDb API
     const { data } = await apiClient.get<MovieSearchResponse>("titles", {
       params: { 
-        types: ["MOVIE"],
+        types: "MOVIE", // String instead of array to avoid URL encoding issues
         pageSize: 100, // Get more results to search through
         sortBy: "SORT_BY_POPULARITY",
         sortOrder: "DESC",
