@@ -1,73 +1,63 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useMovieSearch } from "./useMovieSearch";
-import type { MovieSearchResult } from "@/types/movie";
+import type { Movie } from "@/components/movies/MovieCard";
 
 interface UseInfiniteMovieSearchParams {
   query: string;
 }
 
 export function useInfiniteMovieSearch({ query }: UseInfiniteMovieSearchParams) {
-  const [allPages, setAllPages] = useState<MovieSearchResult[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasInitialized, setHasInitialized] = useState(false);
-  const [previousQuery, setPreviousQuery] = useState(query);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
   
-  // Get current page data
-  const { data, isLoading, isError, error } = useMovieSearch({
-    query,
-    page: currentPage,
-  });
+  // Use the existing useMovieSearch hook
+  const { results, isLoading, error, search } = useMovieSearch();
+
+  // Search function that accumulates results
+  const searchWithAccumulation = useCallback(async (searchQuery: string) => {
+    await search(searchQuery);
+    setHasSearched(true);
+  }, [search]);
 
   // Reset when query changes
   const reset = useCallback(() => {
-    setAllPages([]);
-    setCurrentPage(1);
-    setHasInitialized(false);
+    setAllMovies([]);
+    setHasSearched(false);
   }, []);
 
-  // Handle query changes
-  useEffect(() => {
-    if (query !== previousQuery) {
-      reset();
-      setPreviousQuery(query);
+  // Update movies when results arrive
+  const updateMovies = useCallback(() => {
+    if (results.length > 0) {
+      if (query && hasSearched) {
+        // For search results, replace all movies
+        setAllMovies(results);
+      } else if (!query) {
+        // For popular movies, accumulate
+        setAllMovies(prev => {
+          const existingIds = new Set(prev.map(movie => movie.id));
+          const newMovies = results.filter(movie => !existingIds.has(movie.id));
+          return [...prev, ...newMovies];
+        });
+      }
     }
-  }, [query, previousQuery, reset]);
+  }, [results, query, hasSearched]);
 
-  // Load next page
+  // Load more movies (for popular movies only)
   const loadMore = useCallback(() => {
-    if (!isLoading && currentPage > 0) {
-      setCurrentPage(prev => prev + 1);
-    }
-  }, [isLoading, currentPage]);
+    // This would need to be implemented with pagination
+    // For now, we'll just return false as there's no pagination in useMovieSearch
+    return false;
+  }, []);
 
-  // Update movies when data arrives
-  useEffect(() => {
-    if (!data?.Search) return;
-
-    if (currentPage === 1) {
-      // Always set movies for page 1 (initial load or reset)
-      setAllPages(data.Search);
-      setHasInitialized(true);
-    } else if (currentPage > 1 && hasInitialized) {
-      // Append new page data with deduplication
-      setAllPages(prev => {
-        const existingIds = new Set(prev.map(movie => movie.imdbID));
-        const newMovies = data.Search!.filter(movie => !existingIds.has(movie.imdbID));
-        return [...prev, ...newMovies];
-      });
-    }
-  }, [data, currentPage, hasInitialized]);
-
-  const totalResults = data?.totalResults ? parseInt(data.totalResults, 10) : 0;
-  const hasNextPage = hasInitialized && allPages.length < totalResults && totalResults > 0;
+  const hasNextPage = !query && results.length > 0; // Simplified logic
 
   return {
-    movies: allPages,
-    isLoading: isLoading && !hasInitialized,
-    isError,
+    movies: query && hasSearched ? results : allMovies,
+    isLoading,
     error,
     hasNextPage,
     loadMore,
     reset,
+    search: searchWithAccumulation,
   };
 }

@@ -12,7 +12,7 @@ export const apiClient = axios.create({
 // Add response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => {
-    console.log("✅ API Response:", response.config.baseURL + response.config.url, response.status);
+    console.log("✅ API Response:", `${response.config.baseURL || ''}${response.config.url || ''}`, response.status);
     // imdbapi.dev returns standard HTTP status codes
     if (response.status >= 400) {
       throw new Error(response.data?.message || `API error: ${response.status}`);
@@ -20,7 +20,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error("❌ API Error:", error.config?.baseURL + error.config?.url, error.response?.status);
+    console.error("❌ API Error:", `${error.config?.baseURL || ''}${error.config?.url || ''}`, error.response?.status);
     throw new Error(error.response?.data?.message || error.message || "Network error");
   }
 );
@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
 // Add request interceptor for debugging
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("🚀 API Request:", config.baseURL + config.url, config.params);
+    console.log("🚀 API Request:", `${config.baseURL || ''}${config.url || ''}`, config.params);
     return config;
   },
   (error) => {

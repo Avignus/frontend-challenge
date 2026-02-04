@@ -31,13 +31,16 @@ const mockMovieDetails: Record<string, MovieDetails> = {
       height: 450,
     },
     genres: ["Action", "Adventure", "Sci-Fi"],
-    runtimeStr: "120 min",
+    runtimeSeconds: 7200,
     plot: "In a world where movies are mocked, one film stands above the rest. This is the story of that film, its struggles, and its ultimate triumph over adversity.",
-    directors: ["John Director"],
-    writers: ["Jane Writer"],
-    stars: ["Actor One", "Actress Two", "Supporting Actor"],
-    imdbRating: 7.8,
-    imdbRatingCount: 125432,
+    directors: [{ id: "nm0000001", displayName: "John Director" }],
+    writers: [{ id: "nm0000002", displayName: "Jane Writer" }],
+    stars: [
+      { id: "nm0000003", displayName: "Actor One" },
+      { id: "nm0000004", displayName: "Actress Two" },
+      { id: "nm0000005", displayName: "Supporting Actor" }
+    ],
+    rating: { aggregateRating: 7.8, voteCount: 125432 },
   },
 };
 
@@ -79,12 +82,15 @@ export function mockGetMovieDetails(imdbId: string): MovieDetails {
     startYear: baseMovie.startYear,
     primaryImage: baseMovie.primaryImage,
     genres: baseMovie.genres,
-    runtimeStr: "120 min",
+    runtimeSeconds: 7200,
     plot: `This is the detailed plot for ${baseMovie.primaryTitle}. In a world where movies are mocked, this film tells an extraordinary story that captivates audiences worldwide.`,
-    directors: ["John Director"],
-    writers: ["Jane Writer"],
-    stars: ["Actor One", "Actress Two", "Supporting Actor"],
-    imdbRating: 7.8,
-    imdbRatingCount: 125432,
+    directors: [{ id: "nm0000001", displayName: "John Director" }],
+    writers: [{ id: "nm0000002", displayName: "Jane Writer" }],
+    stars: [
+      { id: "nm0000003", displayName: "Actor One" },
+      { id: "nm0000004", displayName: "Actress Two" },
+      { id: "nm0000005", displayName: "Supporting Actor" }
+    ],
+    rating: { aggregateRating: 7.8, voteCount: 125432 },
   };
 }

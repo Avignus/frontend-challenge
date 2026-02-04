@@ -22,7 +22,7 @@ function mapToMovie(result: MovieSearchResult): Movie {
     title: result.primaryTitle || result.originalTitle || "Untitled",
     year: result.startYear ?? 0,
     poster: result.primaryImage?.url,
-    rating: result.imdbRating,
+    rating: result.rating?.aggregateRating,
   };
 }
 
