@@ -4,20 +4,20 @@ export interface MovieSearchResult {
   originalTitle?: string;
   fullTitle?: string;
   type: string;
-  year?: number;
+  startYear?: number; // Changed from year to startYear
   primaryImage?: {
     url: string;
-    height?: number;
     width?: number;
+    height?: number;
     caption?: string;
   };
   releaseDate?: string;
-  runtimeMinutes?: number;
+  runtimeSeconds?: number; // Changed from runtimeMinutes to runtimeSeconds
   plot?: string;
-  genres?: string[];
-  directors?: string[];
-  writers?: string[];
-  stars?: string[];
+  genres?: string[]; // Changed from object array to string array
+  directors?: string[]; // Simplified to string array
+  writers?: string[]; // Simplified to string array
+  stars?: string[]; // Simplified to string array
   imdbRating?: number;
   imdbRatingCount?: number;
 }
@@ -34,11 +34,11 @@ export interface MovieDetails {
   originalTitle?: string;
   fullTitle?: string;
   type: string;
-  year?: number;
+  startYear?: number; // Changed from year to startYear
   primaryImage?: {
     url: string;
-    height?: number;
     width?: number;
+    height?: number;
     caption?: string;
   };
   releaseDate?: string;
@@ -47,26 +47,14 @@ export interface MovieDetails {
     month: number;
     year: number;
   };
-  runtimeMinutes?: number;
+  runtimeSeconds?: number; // Changed from runtimeMinutes to runtimeSeconds
   runtimeStr?: string;
   plot?: string;
   plotLocal?: string;
-  genres?: {
-    id: string;
-    name: string;
-  }[];
-  directors?: {
-    id: string;
-    name: string;
-  }[];
-  writers?: {
-    id: string;
-    name: string;
-  }[];
-  stars?: {
-    id: string;
-    name: string;
-  }[];
+  genres?: string[]; // Changed to string array
+  directors?: string[]; // Changed to string array
+  writers?: string[]; // Changed to string array
+  stars?: string[]; // Changed to string array
   ratings?: {
     id: string;
     title: string;

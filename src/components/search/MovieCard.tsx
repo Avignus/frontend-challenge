@@ -16,7 +16,7 @@ export function MovieCard({ movie }: MovieCardProps) {
       href={`/movie/${movie.id}`}
       className="group block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       role="article"
-      aria-label={`View details for ${movie.primaryTitle} (${movie.year})`}
+      aria-label={`View details for ${movie.primaryTitle} (${movie.startYear})`}
     >
       <div className="relative aspect-[2/3] bg-gray-100">
         <Image
@@ -36,7 +36,7 @@ export function MovieCard({ movie }: MovieCardProps) {
         <h3 className="font-semibold text-gray-800 text-sm mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
           {movie.primaryTitle}
         </h3>
-        <p className="text-gray-600 text-xs">{movie.year}</p>
+        <p className="text-gray-600 text-xs">{movie.startYear}</p>
       </div>
     </Link>
   );

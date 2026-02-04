@@ -30,7 +30,7 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
         <div className="md:w-2/3 p-6 md:p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">{movie.primaryTitle}</h1>
           <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
-            <span className="font-medium">{movie.year}</span>
+            <span className="font-medium">{movie.startYear}</span>
             <span>•</span>
             <span>{movie.runtimeStr}</span>
             <span>•</span>
@@ -39,7 +39,7 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
           
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Genre</h2>
-            <p className="text-gray-600">{movie.genres?.map(g => g.name).join(', ')}</p>
+            <p className="text-gray-600">{movie.genres?.join(', ')}</p>
           </div>
           
           <div className="mb-6">
@@ -50,11 +50,11 @@ export function MovieDetails({ movie }: MovieDetailsProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <h3 className="font-semibold text-gray-800 mb-1">Director</h3>
-              <p className="text-gray-600">{movie.directors?.map(d => d.name).join(', ')}</p>
+              <p className="text-gray-600">{movie.directors?.join(', ')}</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 mb-1">Actors</h3>
-              <p className="text-gray-600">{movie.stars?.map(s => s.name).join(', ')}</p>
+              <p className="text-gray-600">{movie.stars?.join(', ')}</p>
             </div>
           </div>
           
