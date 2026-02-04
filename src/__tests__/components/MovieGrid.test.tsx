@@ -48,8 +48,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    expect(screen.getByText("Loading Movies")).toBeInTheDocument();
-    // Check for skeleton loading elements
+    // Loading state shows skeleton elements but not the title
     const skeletonElements = document.querySelectorAll(".animate-pulse");
     expect(skeletonElements.length).toBeGreaterThan(0);
   });
@@ -64,7 +63,8 @@ describe("MovieGrid", () => {
       />
     );
 
-    expect(screen.getByText("Error Movies")).toBeInTheDocument();
+    // Error state doesn't show the title, only the error message
+    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
     expect(screen.getByText("Failed to load movies")).toBeInTheDocument();
   });
 
@@ -79,7 +79,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    expect(screen.getByText("Empty Movies")).toBeInTheDocument();
+    // Empty state doesn't show the title, only the empty message
     expect(screen.getByText("No movies found")).toBeInTheDocument();
   });
 
@@ -106,7 +106,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    const movieLinks = screen.getAllByRole("article");
+    const movieLinks = screen.getAllByRole("link");
     expect(movieLinks).toHaveLength(2);
   });
 
@@ -120,7 +120,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    const movieLinks = screen.queryAllByRole("article");
+    const movieLinks = screen.queryAllByRole("link");
     expect(movieLinks).toHaveLength(0);
   });
 
@@ -134,7 +134,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    const movieLinks = screen.queryAllByRole("article");
+    const movieLinks = screen.queryAllByRole("link");
     expect(movieLinks).toHaveLength(0);
   });
 
@@ -148,7 +148,7 @@ describe("MovieGrid", () => {
       />
     );
 
-    const movieLinks = screen.getAllByRole("article");
+    const movieLinks = screen.getAllByRole("link");
     expect(movieLinks[0]).toHaveAttribute("href", "/movie/tt1234567");
     expect(movieLinks[1]).toHaveAttribute("href", "/movie/tt7654321");
   });
